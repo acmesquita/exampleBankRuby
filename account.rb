@@ -29,13 +29,13 @@ class Account
 
 	def deposit(value)
 		self.balance += value
-		records << Record.new({origin:nil, destiny: self, value:value, date:Date.today, type:"D"})
+		records << Record.new({origin:self, destiny: self, value:value, date:Date.today, type:"D"})
 	end
 
 	def cash_out(value)
 		if self.balance > value
 			self.balance -= value
-			records << Record.new({origin:self, destiny: nil, value:value, date:Date.today, type:"CO"})
+			records << Record.new({origin:self, destiny: self, value:value, date:Date.today, type:"C"})
 			return true
 		end
 		return false

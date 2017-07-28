@@ -113,6 +113,7 @@ loop do
 						puts
 						puts
 						account.show_statement
+						ask "return?"
 					}
 					menu.choice(:exit){ask "Are you sure?"}
 				end
