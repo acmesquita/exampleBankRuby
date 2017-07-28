@@ -1,3 +1,5 @@
+require 'date'
+
 load 'record.rb'
 
 
@@ -8,25 +10,39 @@ class Account
 		@type = options[:type]
 		@client = options[:client]
 		@balance = options[:balance]
+		@number = options[:number]
 		@records = []
 	end
 
-	attr_accessor :id, :type, :client, :balance, :records
+	def to_s
+		number.to_s + " (" + type.to_s + ") - " + client.name.to_s + " - " + client.document.to_s + " - $" + balance.to_s
+	end
+
+	attr_accessor :id, :type, :client, :balance, :records, :number
 
 	def transfer(account, value_tranfer)
-		self.balance -= value_tranfer
-		account.balance += value_tranfer
-		record.new({origin:self, destiny: account, value:valor_tranfer, date:Date.today})
+		if self.cash_out(value_tranfer)
+			account.deposit(value_tranfer)
+			records << Record.new({origin:self, destiny: account, value:value_tranfer, date:Date.today, type:"T"})
+		end
 	end
 
 	def deposit(value)
 		self.balance += value
+		records << Record.new({origin:nil, destiny: self, value:value, date:Date.today, type:"D"})
 	end
 
 	def cash_out(value)
-		if balance > value
-			balance -= value
+		if self.balance > value
+			self.balance -= value
+			records << Record.new({origin:self, destiny: nil, value:value, date:Date.today, type:"CO"})
+			return true
 		end
+		return false
 	end	
+
+	def show_statement
+		self.records.each{ |r| puts r.to_s}
+	end
 end
 
